@@ -15,7 +15,7 @@ Unlike generic AI models, this agent grounds its answers strictly in the provide
 *   **Source Citations**: Provides transparency by citing the source of the information.
 *   **Local Privacy**: Uses local embeddings (HuggingFace) so your document vectors are generated on your machine.
 *   **Modern UI**: Built with Streamlit for a clean, dark-mode chat interface.
-*   **Cost-Effective**: Uses Google Gemini 1.5 Flash for high-speed, low-cost inference.
+*   **Cost-Effective**: Uses Google Gemini 2.5 Flash for high-speed, low-cost inference.
 
 ### Limitations
 *   **Single File Upload**: Currently optimized for processing one file at a time (though the backend supports multiple).
@@ -99,7 +99,7 @@ graph TD
         Embed[HuggingFace Embeddings]
         VectorDB[(ChromaDB)]
         RAG[RAG Chain]
-        LLM[Gemini 1.5 Flash]
+        LLM[Gemini 2.5 Flash]
     end
     
     UI -- "1. Upload PDF/Txt" --> Ingest
