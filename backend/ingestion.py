@@ -16,7 +16,7 @@ def load_document(file_path: str) -> list:
 def chunk_text(documents: list, chunk_size: int = 1000, overlap: int = 100) -> list:
     """Splits text into chunks using LangChain splitter."""
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=chunk_size,
-        chunk_overlap=overlap
+        chunk_size=500,
+        chunk_overlap=200
     )
     return text_splitter.split_documents(documents)

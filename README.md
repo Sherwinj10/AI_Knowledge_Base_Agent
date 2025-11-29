@@ -1,38 +1,36 @@
 # AI Knowledge Base Agent
 
+An intelligent document assistant capable of ingesting, retrieving, and answering questions from PDF and Text documents using Retrieval-Augmented Generation (RAG) with session memory.
+
 ## Overview
-The **AI Knowledge Base Agent** is an intelligent document assistant designed to bridge the gap between static documents and dynamic information retrieval. By leveraging **RAG (Retrieval-Augmented Generation)**, it allows users to upload PDF or Text documents and ask natural language questions about them.
+The **AI Knowledge Base Agent** is designed to bridge the gap between static documents and dynamic information retrieval. By leveraging **RAG**, it allows users to upload PDF or Text documents and ask natural language questions about them.
 
 Unlike generic AI models, this agent grounds its answers strictly in the provided content, ensuring accuracy and relevance for specific use cases like HR policies, technical manuals, or legal contracts.
-
----
 
 ## Features & Limitations
 
 ### Features
-*   **Document Ingestion**: Upload and process PDF and TXT files instantly.
-*   **Context-Aware Answers**: Uses RAG to find the exact section of your document relevant to your question.
-*   **Source Citations**: Provides transparency by citing the source of the information.
-*   **Local Privacy**: Uses local embeddings (HuggingFace) so your document vectors are generated on your machine.
-*   **Modern UI**: Built with Streamlit for a clean, dark-mode chat interface.
-*   **Cost-Effective**: Uses Google Gemini 2.5 Flash for high-speed, low-cost inference.
+*   **Document Ingestion**: Supports **PDF** and **TXT** files using LangChain's `PyPDFLoader` and `TextLoader`.
+*   **Context-Aware Answers**: Uses RAG to retrieve relevant document chunks for accurate answering.
+*   **Structured Output**: Answers are formatted with bullet points, a summary, and confidence levels.
+*   **Source Citations**: Provides transparency by citing the specific document chunks used.
+*   **Local Privacy**: Uses local **HuggingFace embeddings** (`all-MiniLM-L6-v2`) to generate vectors on your machine.
+*   **Modern UI**: Built with a clean **HTML/JS Frontend** and a fast **FastAPI Backend**.
+*   **Cost-Effective**: Uses **Google Gemini 2.5 Flash** for high-speed, low-cost inference.
 
 ### Limitations
-*   **Single File Upload**: Currently optimized for processing one file at a time (though the backend supports multiple).
-*   **Text-Only Analysis**: Does not currently extract data from images or tables within PDFs (OCR is not implemented).
+*   **Text-Only Analysis**: Currently extracts text only; does not process images or tables within PDFs (no OCR).
+*   **Single File Upload**: Optimized for processing one file at a time.
 *   **Session Memory**: Chat history is session-based and clears when you refresh the page.
 
----
+## Tech Stack & APIs Used
 
-## Tech Stack & APIs
-
-*   **Frontend**: [Streamlit](https://streamlit.io/) (Pure Python UI)
-*   **Framework**: [LangChain](https://www.langchain.com/) (Orchestration)
+*   **Frontend**: HTML, CSS, JavaScript (Vanilla)
+*   **Backend**: [FastAPI](https://fastapi.tiangolo.com/) (Python)
+*   **Ingestion**: [LangChain](https://www.langchain.com/) (PyPDFLoader, TextLoader)
 *   **LLM**: [Google Gemini 2.5 Flash](https://ai.google.dev/) (via `langchain-google-genai`)
 *   **Embeddings**: [HuggingFace](https://huggingface.co/) `all-MiniLM-L6-v2` (Local execution)
 *   **Vector Database**: [ChromaDB](https://www.trychroma.com/) (Local persistence)
-
----
 
 ## Setup & Run Instructions
 
@@ -62,57 +60,46 @@ Unlike generic AI models, this agent grounds its answers strictly in the provide
 4.  **Set Up Environment Variables**
     Create a `.env` file in `backend/.env` and add your API key:
     ```bash
-    GOOGLE_API_KEY=your_api_key_here
+    GOOGLE_API_KEY=your_google_key
     ```
 
 ### Running the App
-```bash
-streamlit run app.py
-```
-The application will launch automatically at `http://localhost:8501`.
-
----
+1.  **Start the Backend Server**:
+    ```bash
+    uvicorn backend.main:app --reload
+    ```
+2.  **Access the App**:
+    Open your browser and navigate to `http://localhost:8000`.
 
 ## Potential Improvements
 *   **Multi-File Support**: Allow uploading entire folders or multiple PDFs at once.
 *   **OCR Integration**: Add support for scanned documents and images using Tesseract or specialized models.
-*   **Chat History Persistence**: Save chat history to a database (SQLite/Postgres) to resume conversations later.
+*   **Chat History Persistence**: Save chat history to a database (SQLite/Postgres).
 *   **Docker Support**: Containerize the application for easier deployment.
-*   **Advanced RAG**: Implement "Hybrid Search" (Keyword + Vector) for better retrieval accuracy.
-
-
----
 
 ## Architecture Diagram
 
 ```mermaid
 graph TD
-    User([User]) <--> UI[Streamlit App]
-    
-    subgraph "Frontend Layer"
-        UI
+    subgraph Ingestion
+        A[PDF/TXT Document] -->|PyPDFLoader/TextLoader| B(Raw Text)
+        B -->|RecursiveSplitter| C[Text Chunks]
     end
-    
-    subgraph "Backend Logic"
-        Ingest[Ingestion Module]
-        Chunk[Text Splitter]
-        Embed[HuggingFace Embeddings]
-        VectorDB[(ChromaDB)]
-        RAG[RAG Chain]
-        LLM[Gemini 2.5 Flash]
-    end
-    
-    UI -- "1. Upload PDF/Txt" --> Ingest
-    Ingest --> Chunk
-    Chunk --> Embed
-    Embed -- "2. Store Vectors" --> VectorDB
-    
-    UI -- "3. Ask Question" --> RAG
-    RAG -- "4. Embed Query" --> Embed
-    Embed -- "5. Retrieve Context" --> VectorDB
-    VectorDB -- "6. Return Chunks" --> RAG
-    RAG -- "7. Prompt + Context" --> LLM
-    LLM -- "8. Answer" --> UI
-```
 
----
+    subgraph Embedding & Storage
+        C -->|HuggingFace Embeddings| D[(ChromaDB)]
+    end
+
+    subgraph Retrieval & Generation
+        E[User Query] -->|Embed| F[Query Embedding]
+        F -->|Vector Search| D
+        D -->|Retrieve Top-k| G[Relevant Context]
+        G -->|Context + Query| H[Gemini 2.5 Flash]
+        H -->|Generate| I[Structured Answer]
+    end
+    
+    subgraph UI
+        J[Frontend (HTML/JS)] <-->|API| K[Backend (FastAPI)]
+        K <--> H
+    end
+```

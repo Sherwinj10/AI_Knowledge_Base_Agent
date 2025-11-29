@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Knowledge Base Agent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fa-solid fa-brain"></i>
+                <span>Knowledge Agent</span>
+            </div>
+
+            <div class="upload-section">
+                <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload Document</h3>
+                <div class="drop-zone" id="drop-zone">
+                    <i class="fa-regular fa-file-pdf"></i>
+                    <p>Drag & Drop PDF or TXT</p>
+                    <input type="file" id="file-input" accept=".pdf,.txt" hidden>
+                    <button class="btn-secondary" onclick="document.getElementById('file-input').click()">Browse
+                        Files</button>
+                </div>
+                <div id="upload-status" class="status-msg"></div>
+
+                <div class="reset-section" style="margin-top: 1rem; text-align: center;">
+                    <button id="reset-btn" class="btn-secondary"
+                        style="border-color: #f87171; color: #f87171; width: 100%;">
+                        <i class="fa-solid fa-trash"></i> Reset Database
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3><i class="fa-solid fa-circle-info"></i> How it works</h3>
+                <p>1. Upload a document.</p>
+                <p>2. Wait for indexing.</p>
+                <p>3. Ask questions in the chat.</p>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <h2>AI Assistant</h2>
+                <span class="badge">Gemini 2.5 Flash</span>
+            </header>
+
+            <div class="messages-container" id="messages-container">
+                <div class="message bot">
+                    <div class="avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div class="content">
+                        <p style="white-space: normal;">Hello! I'm your AI Knowledge Agent. Upload a document to the
+                            left and ask me anything about
+                            it.</p>
+                    </div>
+                </div>
+                <!-- Messages will be added here dynamically -->
+            </div>
+
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="Ask a question about your documents..."
+                        autocomplete="off">
+                    <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>

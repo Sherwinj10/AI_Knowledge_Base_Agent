@@ -23,4 +23,19 @@ def add_documents(chunks: list):
 
 def get_retriever():
     """Returns a retriever object for the vector store."""
-    return vector_store.as_retriever(search_kwargs={"k": 3})
+    return vector_store.as_retriever(search_kwargs={"k": 5})
+
+def reset_database():
+    """Clears the vector store by deleting the persistence directory."""
+    global vector_store
+    import shutil
+    
+    if os.path.exists("./chroma_db"):
+        shutil.rmtree("./chroma_db")
+    
+    # Re-initialize
+    vector_store = Chroma(
+        collection_name="documents",
+        embedding_function=embeddings,
+        persist_directory="./chroma_db"
+    )

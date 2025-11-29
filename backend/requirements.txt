@@ -1,3 +1,6 @@
+fastapi
+uvicorn
+python-multipart
 chromadb
 google-generativeai
 pypdf
@@ -10,7 +13,6 @@ langchain-core
 langchain-text-splitters
 langchain-chroma
 langchain-google-genai
-streamlit
 watchdog
 sentence-transformers
 langchain-huggingface
