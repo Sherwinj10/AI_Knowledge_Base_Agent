@@ -81,25 +81,28 @@ Unlike generic AI models, this agent grounds its answers strictly in the provide
 
 ```mermaid
 graph TD
+
     subgraph Ingestion
-        A[PDF/TXT Document] -->|PyPDFLoader/TextLoader| B(Raw Text)
+        A[PDF TXT Document] -->|PyPDFLoader TextLoader| B(Raw Text)
         B -->|RecursiveSplitter| C[Text Chunks]
     end
 
-    subgraph Embedding & Storage
+    subgraph Embedding_Storage
         C -->|HuggingFace Embeddings| D[(ChromaDB)]
     end
 
-    subgraph Retrieval & Generation
+    subgraph Retrieval_Generation
         E[User Query] -->|Embed| F[Query Embedding]
         F -->|Vector Search| D
-        D -->|Retrieve Top-k| G[Relevant Context]
-        G -->|Context + Query| H[Gemini 2.5 Flash]
+        D -->|Retrieve Top k| G[Relevant Context]
+        G -->|Context plus Query| H[Gemini 25 Flash]
         H -->|Generate| I[Structured Answer]
     end
     
     subgraph UI
-        J[Frontend (HTML/JS)] <-->|API| K[Backend (FastAPI)]
-        K <--> H
+        J[Frontend HTML JS] -->|API| K[Backend FastAPI]
+        K --> J
+        K --> H
+        H --> K
     end
 ```
